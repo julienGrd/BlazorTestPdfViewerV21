@@ -1,0 +1,52 @@
+﻿@page "/"
+@using Syncfusion.Blazor.PdfViewer;
+@using Syncfusion.Blazor.PdfViewerServer;
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+<button @onclick="Save">Save</button>
+@*<SurveyPrompt Title="How is Blazor working for you?" />*@
+<SfPdfViewerServer DocumentPath="@DocumentPath" Height="100%" Width="100%"
+                   ToolbarSettings="@ToolbarSettings"
+                   ZoomMode="DefaultZoom"
+                   @ref="Viewer">
+    <PdfViewerEvents DocumentLoaded="@DocumentLoaded"></PdfViewerEvents>
+</SfPdfViewerServer>
+@code {
+    protected ZoomMode DefaultZoom = ZoomMode.FitToWidth;
+    SfPdfViewerServer Viewer;
+    private string DocumentPath { get; set; } = "wwwroot/Cerfa-15695 MDPH.PDF";
+
+    public PdfViewerToolbarSettings ToolbarSettings = new PdfViewerToolbarSettings()
+        {
+            ToolbarItems = new List<ToolbarItem>()
+            {
+                ToolbarItem.PageNavigationTool,
+                ToolbarItem.MagnificationTool,
+                //ToolbarItem.CommentTool,
+                ToolbarItem.SelectionTool,
+                ToolbarItem.PanTool,
+                //ToolbarItem.UndoRedoTool,
+                //ToolbarItem.CommentTool,
+                //ToolbarItem.AnnotationEditTool,
+                ToolbarItem.SearchOption,
+                //ToolbarItem.PrintOption,
+                //ToolbarItem.DownloadOption
+            }
+
+        };
+    private void DocumentLoaded(LoadEventArgs args)
+    {
+        //IsLoading = false;
+        //this.LaunchStateHasChanged();
+    }
+    private async Task Save()
+    {
+        byte[] data = await Viewer.GetDocumentAsync();
+        await File.WriteAllBytesAsync("result.pdf", data);
+
+    }
+}
